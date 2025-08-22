@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Análise - Espécies de Phyllosticta</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dashboard de Análise - Espécies de Phyllosticta</h1>
+            <p class="description">Visualização e comparação de dados genômicos de espécies associadas a citrus</p>
+        </header>
+        
+        <div class="dashboard">
+            <div class="filters">
+                <div class="filter-group">
+                    <h3>Filtros</h3>
+                    <label class="filter-label" for="species-filter">Espécie:</label>
+                    <select id="species-filter" multiple size="6">
+                        <option value="all" selected>Todas</option>
+                        <option value="P. capitalensis">P. capitalensis</option>
+                        <option value="P. citriasiana">P. citriasiana</option>
+                        <option value="P. citribraziliensis">P. citribraziliensis</option>
+                        <option value="P. citricarpa">P. citricarpa</option>
+                        <option value="P. citrichinaensis">P. citrichinaensis</option>
+                        <option value="P. paracitricarpa">P. paracitricarpa</option>
+                    </select>
+                    
+                    <label class="filter-label" for="lifestyle-filter">Estilo de Vida:</label>
+                    <select id="lifestyle-filter">
+                        <option value="all">Todos</option>
+                        <option value="Patógeno">Patógeno</option>
+                        <option value="Endófito">Endófito</option>
+                    </select>
+                    
+                    <label class="filter-label" for="origin-filter">Origem:</label>
+                    <select id="origin-filter">
+                        <option value="all">Todas</option>
+                        <option value="Brasil">Brasil</option>
+                        <option value="China">China</option>
+                        <option value="Tailândia">Tailândia</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                    
+                    <label class="filter-label" for="gene-filter">Genes Mínimos:</label>
+                    <input type="range" id="gene-filter" min="9000" max="11000" value="9000" step="100">
+                    <span id="gene-value">9000</span>
+                    
+                    <button id="apply-filters">Aplicar Filtros</button>
+                    <button id="reset-filters" class="reset">Limpar Filtros</button>
+                </div>
+                
+                <div class="filter-group">
+                    <h3>Comparação</h3>
+                    <label class="filter-label" for="compare-1">Comparar Espécie 1:</label>
+                    <select id="compare-1">
+                        <option value="P. capitalensis">P. capitalensis</option>
+                        <option value="P. citriasiana">P. citriasiana</option>
+                        <option value="P. citribraziliensis">P. citribraziliensis</option>
+                        <option value="P. citricarpa">P. citricarpa</option>
+                        <option value="P. citrichinaensis">P. citrichinaensis</option>
+                        <option value="P. paracitricarpa">P. paracitricarpa</option>
+                    </select>
+                    
+                    <label class="filter-label" for="compare-2">Comparar Espécie 2:</label>
+                    <select id="compare-2">
+                        <option value="P. citricarpa">P. citricarpa</option>
+                        <option value="P. capitalensis">P. capitalensis</option>
+                        <option value="P. citriasiana">P. citriasiana</option>
+                        <option value="P. citribraziliensis">P. citribraziliensis</option>
+                        <option value="P. citrichinaensis">P. citrichinaensis</option>
+                        <option value="P. paracitricarpa">P. paracitricarpa</option>
+                    </select>
+                    
+                    <div class="compare-buttons">
+                        <button id="compare-button">Comparar Espécies</button>
+                        <button id="compare-reset" class="reset">Limpar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div class="summary-cards">
+                    <div class="card">
+                        <h3>Total de Espécies</h3>
+                        <div class="value" id="total-species">6</div>
+                        <div class="subtext">Espécies analisadas</div>
+                    </div>
+                    <div class="card">
+                        <h3>Total de Linhagens</h3>
+                        <div class="value" id="total-strains">35</div>
+                        <div class="subtext">Linhagens catalogadas</div>
+                    </div>
+                    <div class="card">
+                        <h3>Média de Genes</h3>
+                        <div class="value" id="avg-genes">9,672</div>
+                        <div class="subtext">Por linhagem</div>
+                    </div>
+                    <div class="card">
+                        <h3>Proteínas Secretadas</h3>
+                        <div class="value" id="avg-proteins">785</div>
+                        <div class="subtext">Média por linhagem</div>
+                    </div>
+                </div>
+                
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <h3 class="chart-title">Distribuição de Estilo de Vida</h3>
+                        <canvas id="lifestyle-chart"></canvas>
+                    </div>
+                    
+                    <div class="chart-box">
+                        <h3 class="chart-title">Tamanho do Genoma por Espécie</h3>
+                        <canvas id="genome-size-chart"></canvas>
+                    </div>
+                    
+                    <div class="chart-box">
+                        <h3 class="chart-title">Conteúdo GC por Espécie</h3>
+                        <canvas id="gc-content-chart"></canvas>
+                    </div>
+                    
+                    <div class="chart-box">
+                        <h3 class="chart-title">Proteínas Secretadas por Espécie</h3>
+                        <canvas id="secreted-proteins-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="comparison-table">
+                    <h3 class="chart-title">Comparação entre Espécies</h3>
+                    <div class="table-container">
+                        <table id="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Característica</th>
+                                    <th>P. capitalensis</th>
+                                    <th>P. citriasiana</th>
+                                    <th>P. citribraziliensis</th>
+                                    <th>P. citricarpa</th>
+                                    <th>P. citrichinaensis</th>
+                                    <th>P. paracitricarpa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Número de Linhagens</td>
+                                    <td>7</td>
+                                    <td>4</td>
+                                    <td>3</td>
+                                    <td>10</td>
+                                    <td>2</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>Tamanho Médio do Genoma (bp)</td>
+                                    <td>32,610,731</td>
+                                    <td>33,489,764</td>
+                                    <td>31,342,546</td>
+                                    <td>30,369,999</td>
+                                    <td>29,345,772</td>
+                                    <td>30,178,887</td>
+                                </tr>
+                                <tr>
+                                    <td>Conteúdo GC Médio (%)</td>
+                                    <td>54.51%</td>
+                                    <td>51.84%</td>
+                                    <td>54.28%</td>
+                                    <td>53.87%</td>
+                                    <td>55.05%</td>
+                                    <td>54.00%</td>
+                                </tr>
+                                <tr>
+                                    <td>Genes Médios</td>
+                                    <td>10,014</td>
+                                    <td>9,310</td>
+                                    <td>9,695</td>
+                                    <td>9,261</td>
+                                    <td>9,237</td>
+                                    <td>9,218</td>
+                                </tr>
+                                <tr>
+                                    <td>Proteínas Secretadas Médias</td>
+                                    <td>810</td>
+                                    <td>762</td>
+                                    <td>797</td>
+                                    <td>763</td>
+                                    <td>758</td>
+                                    <td>745</td>
+                                </tr>
+                                <tr>
+                                    <td>Efetores Médias</td>
+                                    <td>204</td>
+                                    <td>182</td>
+                                    <td>206</td>
+                                    <td>189</td>
+                                    <td>187</td>
+                                    <td>182</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Dashboard de análise desenvolvido para visualização de dados de espécies de Phyllosticta</p>
+            <p>Dados obtidos de múltiplos estudos e conjuntos de dados genômicos</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
