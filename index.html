@@ -3,22 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Análise - Espécies de Phyllosticta</title>
+    <title>🧬 Dashboard Integrado de Genômica - Phyllosticta | BioGeMM - UFPR</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Dashboard de Análise - Espécies de Phyllosticta</h1>
-            <p class="description">Visualização e comparação de dados genômicos de espécies associadas a citrus</p>
-        </header>
+  <header class="header">
+    <div class="header-content">
+        <img src="Biogemm-Photoroom.png" alt="Logo BioGeMM" class="logo">
+        <div class="text-content">
+            <h1>🧬 Dashboard Integrado de Genômica - Phyllosticta</h1>
+            <p class="description">
+                Plataforma interativa para <strong>visualização, análise e comparação de dados genômicos</strong> 
+                das espécies de <em>Phyllosticta</em> associadas a citrus (Cepas-Tipo).
+                <br><br>
+                O sistema permite <strong>upload de arquivos</strong>, integração com o <strong>NCBI</strong> 
+                e utilização de dados do 
+                <strong>Laboratório de Bioprospecção e Genética Molecular de Microrganismos - BioGeMM (UFPR)</strong>.
+            </p>
+            <p class="author">
+                Desenvolvido por <strong>Murilo Gabriel da Silva</strong>  
+                (<a href="mailto:murilo.gabriel@ufpr.br">murilo.gabriel@ufpr.br</a>)
+            </p>
+        </div>
+    </div>
+</header>
+
+
         
         <div class="dashboard">
             <div class="filters">
                 <div class="filter-group">
                     <h3>Filtros</h3>
-                    <label class="filter-label" for="species-filter">Espécie:</label>
+                    <label class="filter-label" for="species-filter">🦠 Espécie:</label>
                     <select id="species-filter" multiple size="6">
                         <option value="all" selected>Todas</option>
                         <option value="P. capitalensis">P. capitalensis</option>
@@ -29,33 +48,47 @@
                         <option value="P. paracitricarpa">P. paracitricarpa</option>
                     </select>
                     
-                    <label class="filter-label" for="lifestyle-filter">Estilo de Vida:</label>
+                    <label class="filter-label" for="lifestyle-filter">🧪 Estilo de Vida:</label>
                     <select id="lifestyle-filter">
                         <option value="all">Todos</option>
                         <option value="Patógeno">Patógeno</option>
                         <option value="Endófito">Endófito</option>
                     </select>
                     
-                    <label class="filter-label" for="origin-filter">Origem:</label>
+                    <label class="filter-label" for="origin-filter">🌍 Origem:</label>
                     <select id="origin-filter">
                         <option value="all">Todas</option>
                         <option value="Brasil">Brasil</option>
                         <option value="China">China</option>
                         <option value="Tailândia">Tailândia</option>
-                        <option value="Outros">Outros</option>
+                        <option value="Austrália">Austrália</option>
+                        <option value="Grécia">Grécia</option>
+                        <option value="República Dominicana">República Dominicana</option>
+                        <option value="Indonésia">Indonésia</option>
+                        <option value="Nova Zelândia">Nova Zelândia</option>
+                        <option value="Vietnã">Vietnã</option>
+                        <option value="Zimbábue">Zimbábue</option>
+                        <option value="África do Sul">África do Sul</option>
+                        <option value="EUA">EUA</option>
+                        <option value="Portugal">Portugal</option>
+                        <option value="Argentina">Argentina</option>
+                        <option value="Malta">Malta</option>
+                        <option value="Outros">Outros Países</option>
+                        <option value="Uploaded">Uploaded</option>
+                        <option value="NCBI">NCBI</option>
                     </select>
                     
-                    <label class="filter-label" for="gene-filter">Genes Mínimos:</label>
+                    <label class="filter-label" for="gene-filter">🧬 Genes Mínimos:</label>
                     <input type="range" id="gene-filter" min="9000" max="11000" value="9000" step="100">
                     <span id="gene-value">9000</span>
                     
-                    <button id="apply-filters">Aplicar Filtros</button>
-                    <button id="reset-filters" class="reset">Limpar Filtros</button>
+                    <button id="apply-filters"><i class="fas fa-filter"></i> Aplicar Filtros</button>
+                    <button id="reset-filters" class="reset"><i class="fas fa-refresh"></i> Limpar Filtros</button>
                 </div>
                 
                 <div class="filter-group">
                     <h3>Comparação</h3>
-                    <label class="filter-label" for="compare-1">Comparar Espécie 1:</label>
+                    <label class="filter-label" for="compare-1">📊 Comparar Espécie 1:</label>
                     <select id="compare-1">
                         <option value="P. capitalensis">P. capitalensis</option>
                         <option value="P. citriasiana">P. citriasiana</option>
@@ -65,7 +98,7 @@
                         <option value="P. paracitricarpa">P. paracitricarpa</option>
                     </select>
                     
-                    <label class="filter-label" for="compare-2">Comparar Espécie 2:</label>
+                    <label class="filter-label" for="compare-2">📈 Comparar Espécie 2:</label>
                     <select id="compare-2">
                         <option value="P. citricarpa">P. citricarpa</option>
                         <option value="P. capitalensis">P. capitalensis</option>
@@ -76,8 +109,8 @@
                     </select>
                     
                     <div class="compare-buttons">
-                        <button id="compare-button">Comparar Espécies</button>
-                        <button id="compare-reset" class="reset">Limpar</button>
+                        <button id="compare-button"><i class="fas fa-balance-scale"></i> Comparar</button>
+                        <button id="compare-reset" class="reset"><i class="fas fa-times"></i> Limpar</button>
                     </div>
                 </div>
             </div>
@@ -85,118 +118,365 @@
             <div class="content">
                 <div class="summary-cards">
                     <div class="card">
-                        <h3>Total de Espécies</h3>
+                        <h3>🦠 Total de Espécies</h3>
                         <div class="value" id="total-species">6</div>
                         <div class="subtext">Espécies analisadas</div>
                     </div>
                     <div class="card">
-                        <h3>Total de Linhagens</h3>
+                        <h3>🧪 Total de Linhagens</h3>
                         <div class="value" id="total-strains">35</div>
                         <div class="subtext">Linhagens catalogadas</div>
                     </div>
                     <div class="card">
-                        <h3>Média de Genes</h3>
+                        <h3>🧬 Média de Genes</h3>
                         <div class="value" id="avg-genes">9,672</div>
                         <div class="subtext">Por linhagem</div>
                     </div>
                     <div class="card">
-                        <h3>Proteínas Secretadas</h3>
+                        <h3>🔬 Proteínas Secretadas</h3>
                         <div class="value" id="avg-proteins">785</div>
                         <div class="subtext">Média por linhagem</div>
                     </div>
                 </div>
                 
-                <div class="charts-container">
-                    <div class="chart-box">
-                        <h3 class="chart-title">Distribuição de Estilo de Vida</h3>
-                        <canvas id="lifestyle-chart"></canvas>
+                <!-- Container de Abas Atualizado -->
+                <div class="tab-container">
+                    <div class="tab active" data-tab="genomics">
+                        <i class="fas fa-dna"></i> Genômica
                     </div>
-                    
-                    <div class="chart-box">
-                        <h3 class="chart-title">Tamanho do Genoma por Espécie</h3>
-                        <canvas id="genome-size-chart"></canvas>
+                    <div class="tab" data-tab="proteomics">
+                        <i class="fas fa-atom"></i> Proteômica
                     </div>
-                    
-                    <div class="chart-box">
-                        <h3 class="chart-title">Conteúdo GC por Espécie</h3>
-                        <canvas id="gc-content-chart"></canvas>
+                    <div class="tab" data-tab="structure">
+                        <i class="fas fa-chart-line"></i> Estrutura Genômica
                     </div>
-                    
-                    <div class="chart-box">
-                        <h3 class="chart-title">Proteínas Secretadas por Espécie</h3>
-                        <canvas id="secreted-proteins-chart"></canvas>
+                    <div class="tab" data-tab="upload">
+                        <i class="fas fa-upload"></i> Carregar Dados
+                    </div>
+                    <div class="tab" data-tab="ncbi-search">
+                        <i class="fas fa-database"></i> Buscar NCBI
                     </div>
                 </div>
-                
+
+                <!-- Conteúdo da Aba Genômica -->
+                <div class="tab-content active" id="genomics-tab">
+                    <div class="charts-container">
+                        <div class="chart-box">
+                            <h3 class="chart-title">📏 Tamanho do Genoma por Espécie (Mb)</h3>
+                            <canvas id="genome-size-chart"></canvas>
+                        </div>
+                        
+                        <div class="chart-box">
+                            <h3 class="chart-title">🧬 Conteúdo GC por Espécie (%)</h3>
+                            <canvas id="gc-content-chart"></canvas>
+                        </div>
+                        
+                        <div class="chart-box">
+                            <h3 class="chart-title">🔬 Genes Previstos por Espécie</h3>
+                            <canvas id="genes-chart"></canvas>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">🔄 Conteúdo Repetitivo por Espécie (%)</h3>
+                            <canvas id="repetitive-content-chart"></canvas>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">⚡ % de TEs Afetados por RIP</h3>
+                            <canvas id="rip-affected-chart"></canvas>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">📊 Número de Contigs</h3>
+                            <canvas id="contigs-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo da Aba Proteômica -->
+                <div class="tab-content" id="proteomics-tab">
+                    <div class="charts-container">
+                        <div class="chart-box">
+                            <h3 class="chart-title">🔬 Proteínas Secretadas por Espécie</h3>
+                            <canvas id="secreted-proteins-chart"></canvas>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">🎯 Efetores por Espécie</h3>
+                            <canvas id="effectors-chart"></canvas>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">🧪 BGCs por Espécie</h3>
+                            <canvas id="bgcs-chart"></canvas>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">⚙️ CAZymes por Espécie</h3>
+                            <canvas id="cazymes-chart"></canvas>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">🧴 Lipases por Espécie</h3>
+                            <canvas id="lipases-chart"></canvas>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">✂️ Proteases por Espécie</h3>
+                            <canvas id="proteases-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo da Aba Estrutura Genômica -->
+                <div class="tab-content" id="structure-tab">
+                    <div class="charts-container">
+                        <div class="chart-box">
+                            <h3 class="chart-title">📈 Comparação de Tamanho de Genoma vs Genes</h3>
+                            <canvas id="genome-comparison-chart"></canvas>
+                        </div>
+                        
+                        <div class="chart-box">
+                            <h3 class="chart-title">📊 Relação entre Genes e Proteínas Secretadas</h3>
+                            <canvas id="genes-vs-proteins-chart"></canvas>
+                        </div>
+                        
+                        <div class="chart-box">
+                            <h3 class="chart-title">🎨 Distribuição de Conteúdo GC</h3>
+                            <canvas id="gc-distribution-chart"></canvas>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">🎯 Relação entre Efetores e BGCs</h3>
+                            <canvas id="effectors-vs-bgcs-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo da Aba Carregar Dados (APENAS upload de arquivos) -->
+                <div class="tab-content" id="upload-tab">
+                    <div class="upload-section">
+                        <div class="upload-options">
+                            <div class="upload-card">
+                                <h3>📁 Carregar Genomas da Pasta</h3>
+                                <p>Selecione uma pasta contendo arquivos FASTA para análise automática</p>
+                                
+                                <div class="upload-controls">
+                                    <label class="upload-label" for="genomes-folder-upload">
+                                        <i class="fas fa-folder"></i> Selecionar Pasta
+                                    </label>
+                                    <input type="file" id="genomes-folder-upload" webkitdirectory directory multiple accept=".fasta,.fa,.fna" style="display: none;">
+                                    
+                                    <div class="upload-buttons">
+                                        <button id="load-genomes" class="upload-btn">
+                                            <i class="fas fa-upload"></i> Carregar Genomas
+                                        </button>
+                                        <button id="clear-genomes" class="reset-btn">
+                                            <i class="fas fa-trash"></i> Limpar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="folder-status" class="status-message">
+                                    <i class="fas fa-info-circle"></i> Nenhuma pasta selecionada
+                                </div>
+                            </div>
+                            
+                            <div class="upload-info">
+                                <h4>📋 Informações sobre o Carregamento</h4>
+                                <ul>
+                                    <li>✅ Suporta arquivos .fasta, .fa, .fna</li>
+                                    <li>🔍 Análise automática de tamanho e conteúdo GC</li>
+                                    <li>🧬 Estimativa de genes e proteínas baseada em estatísticas</li>
+                                    <li>📊 Integração automática com gráficos e filtros</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="loaded-genomes-display">
+                            <h3 class="chart-title">🧬 Genomas Carregados</h3>
+                            <div id="loaded-genomes-table" class="genomes-table-container">
+                                <div class="empty-state">
+                                    <i class="fas fa-folder-open"></i>
+                                    <p>Nenhum genoma carregado</p>
+                                    <small>Carregue uma pasta com arquivos FASTA para ver os dados aqui</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nova Aba: Buscar NCBI (CONTEÚDO SEPARADO) -->
+                <div class="tab-content" id="ncbi-search-tab">
+                    <div class="search-section">
+                        <div class="search-main">
+                            <div class="upload-card">
+                                <h3>🔍 Buscar no NCBI</h3>
+                                <p>Busque por genomas no banco de dados do NCBI</p>
+                                
+                                <div class="search-controls">
+                                    <input type="text" id="ncbi-search-term" placeholder="Ex: Phyllosticta citricarpa" 
+                                           class="search-input">
+                                    <button id="ncbi-search-btn" class="upload-btn">
+                                        <i class="fas fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                                
+                                <div id="ncbi-results" class="search-results">
+                                    <div class="empty-state">
+                                        <i class="fas fa-search"></i>
+                                        <p>Digite um termo de busca para começar</p>
+                                    </div>
+                                </div>
+                                
+                                <div id="ncbi-selected-result"></div>
+                                
+                                <div class="upload-buttons">
+                                    <button id="ncbi-load-btn" class="upload-btn">
+                                        <i class="fas fa-download"></i> Carregar Genoma Selecionado
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="search-info">
+                            <h4>📋 Informações sobre a Busca NCBI</h4>
+                            <ul>
+                                <li>✅ Acesso ao banco de dados do NCBI</li>
+                                <li>🔍 Busca por nome de organismo ou accession</li>
+                                <li>🧬 Análise automática de características genômicas</li>
+                                <li>📊 Integração imediata com os gráficos</li>
+                                <li>💾 Dados salvos localmente durante a sessão</li>
+                                <li>🌐 Conexão com servidor local na porta 5000</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de Comparação (comum a todas as abas) -->
                 <div class="comparison-table">
-                    <h3 class="chart-title">Comparação entre Espécies</h3>
+                    <h3 class="chart-title">📋 Comparação entre Espécies</h3>
                     <div class="table-container">
                         <table id="comparison-table">
                             <thead>
                                 <tr>
                                     <th>Característica</th>
-                                    <th>P. capitalensis</th>
-                                    <th>P. citriasiana</th>
-                                    <th>P. citribraziliensis</th>
-                                    <th>P. citricarpa</th>
-                                    <th>P. citrichinaensis</th>
-                                    <th>P. paracitricarpa</th>
+                                    <th>P. capitalensis<br><span class="citation">CBS 128856<span class="citation-tooltip">Isolado no Brasil<br>Patógeno de citrus</span></span></th>
+                                    <th>P. citriasiana<br><span class="citation">CBS 120486<span class="citation-tooltip">Isolado na Tailândia<br>Patógeno de citrus</span></span></th>
+                                    <th>P. citribraziliensis<br><span class="citation">CBS 100098<span class="citation-tooltip">Isolado no Brasil<br>Endófito de citrus</span></span></th>
+                                    <th>P. citricarpa<br><span class="citation">CBS 127454<span class="citation-tooltip">Isolado na Austrália<br>Patógeno de citrus</span></span></th>
+                                    <th>P. citrichinaensis<br><span class="citation">CBS 130529<span class="citation-tooltip">Isolado na China<br>Patógeno de citrus</span></span></th>
+                                    <th>P. paracitricarpa<br><span class="citation">CBS 141357<span class="citation-tooltip">Isolado na Grécia<br>Patógeno de citrus</span></span></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Número de Linhagens</td>
-                                    <td>7</td>
-                                    <td>4</td>
-                                    <td>3</td>
-                                    <td>10</td>
-                                    <td>2</td>
-                                    <td>2</td>
+                                    <td><strong>Genes Previstos</strong></td>
+                                    <td>9,977</td>
+                                    <td>9,282</td>
+                                    <td>9,574</td>
+                                    <td>9,108</td>
+                                    <td>9,131</td>
+                                    <td>9,083</td>
                                 </tr>
                                 <tr>
-                                    <td>Tamanho Médio do Genoma (bp)</td>
-                                    <td>32,610,731</td>
-                                    <td>33,489,764</td>
-                                    <td>31,342,546</td>
-                                    <td>30,369,999</td>
-                                    <td>29,345,772</td>
-                                    <td>30,178,887</td>
+                                    <td><strong>Proteínas Secretadas</strong></td>
+                                    <td>808</td>
+                                    <td>752</td>
+                                    <td>796</td>
+                                    <td>738</td>
+                                    <td>732</td>
+                                    <td>727</td>
                                 </tr>
                                 <tr>
-                                    <td>Conteúdo GC Médio (%)</td>
-                                    <td>54.51%</td>
-                                    <td>51.84%</td>
-                                    <td>54.28%</td>
-                                    <td>53.87%</td>
-                                    <td>55.05%</td>
-                                    <td>54.00%</td>
-                                </tr>
-                                <tr>
-                                    <td>Genes Médios</td>
-                                    <td>10,014</td>
-                                    <td>9,310</td>
-                                    <td>9,695</td>
-                                    <td>9,261</td>
-                                    <td>9,237</td>
-                                    <td>9,218</td>
-                                </tr>
-                                <tr>
-                                    <td>Proteínas Secretadas Médias</td>
-                                    <td>810</td>
-                                    <td>762</td>
-                                    <td>797</td>
-                                    <td>763</td>
-                                    <td>758</td>
-                                    <td>745</td>
-                                </tr>
-                                <tr>
-                                    <td>Efetores Médias</td>
-                                    <td>204</td>
-                                    <td>182</td>
+                                    <td><strong>Efetores</strong></td>
+                                    <td>198</td>
+                                    <td>178</td>
                                     <td>206</td>
-                                    <td>189</td>
-                                    <td>187</td>
+                                    <td>179</td>
                                     <td>182</td>
+                                    <td>178</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>BGCs</strong></td>
+                                    <td>22</td>
+                                    <td>23</td>
+                                    <td>23</td>
+                                    <td>23</td>
+                                    <td>23</td>
+                                    <td>21</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>CAZymes</strong></td>
+                                    <td>285</td>
+                                    <td>276</td>
+                                    <td>279</td>
+                                    <td>271</td>
+                                    <td>271</td>
+                                    <td>268</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lipases</strong></td>
+                                    <td>156</td>
+                                    <td>150</td>
+                                    <td>151</td>
+                                    <td>147</td>
+                                    <td>148</td>
+                                    <td>145</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Proteases</strong></td>
+                                    <td>303</td>
+                                    <td>301</td>
+                                    <td>303</td>
+                                    <td>295</td>
+                                    <td>296</td>
+                                    <td>293</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tamanho do Genoma (Mb)</strong></td>
+                                    <td>32.46</td>
+                                    <td>32.70</td>
+                                    <td>31.67</td>
+                                    <td>28.95</td>
+                                    <td>29.16</td>
+                                    <td>29.53</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nº de Contigs</strong></td>
+                                    <td>14</td>
+                                    <td>133</td>
+                                    <td>32</td>
+                                    <td>152</td>
+                                    <td>25</td>
+                                    <td>134</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Conteúdo GC (%)</strong></td>
+                                    <td>54.58%</td>
+                                    <td>51.56%</td>
+                                    <td>54.17%</td>
+                                    <td>54.60%</td>
+                                    <td>55.07%</td>
+                                    <td>54.35%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Conteúdo Repetitivo (%)</strong></td>
+                                    <td>1.54%</td>
+                                    <td>8.32%</td>
+                                    <td>6.00%</td>
+                                    <td>1.30%</td>
+                                    <td>2.99%</td>
+                                    <td>2.45%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>% de TEs Afetados por RIP</strong></td>
+                                    <td>89.89%</td>
+                                    <td>92.19%</td>
+                                    <td>94.64%</td>
+                                    <td>93.47%</td>
+                                    <td>96.23%</td>
+                                    <td>92.60%</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -211,6 +491,21 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script src="data/species-data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/comparison.js"></script>
+    <script src="js/editable-table.js"></script>
+    <script src="js/ncbi-search.js"></script>
+    <script src="js/main.js"></script>
+        <head>
+         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+        <script src="https://unpkg.com/@sgratzl/chartjs-chart-boxplot@4.0.0/build/index.umd.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
 </body>
 </html>
