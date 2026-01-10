@@ -36,13 +36,17 @@ const UploadManager = {
         
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
-            if (file.name.match(/\.(fasta|fa|fna)$/i)) {
+            if (file.name.match(/\.(fasta|fa|fna|ffn)$/i)) { // Adicionei ffn para suportar genes
                 await this.processFile(file, i, files.length, progressContainer);
             }
         }
         
         this.updateLoadedGenomesTable();
-        FilterManager.applyFilters();
+        
+        // Se o FilterManager existir, atualiza os filtros
+        if (typeof FilterManager !== 'undefined') {
+            FilterManager.applyFilters();
+        }
         
         // Remover container de progresso
         setTimeout(() => {
@@ -75,7 +79,10 @@ const UploadManager = {
                 
                 if (Utils.isValidFasta(content)) {
                     const analysis = Utils.analyzeFasta(content, file.name);
-                    this.addUploadedGenome(analysis);
+                    
+                    // --- ATUALIZAÇÃO IMPORTANTE ---
+                    // Agora passamos o 'content' (o texto da sequência) para ser salvo
+                    this.addUploadedGenome(analysis, content);
                 }
                 
                 // Atualizar progresso
@@ -95,7 +102,8 @@ const UploadManager = {
         });
     },
 
-    addUploadedGenome(analysis) {
+    // Recebe o sequenceContent como segundo argumento
+    addUploadedGenome(analysis, sequenceContent) {
         const speciesName = `Uploaded: ${analysis.name}`;
         
         uploadedGenomes[speciesName] = {
@@ -103,6 +111,8 @@ const UploadManager = {
             genomeSize: [analysis.size / 1000000], // Converter para Mb
             gcContent: [parseFloat(analysis.gcContent)],
             genes: [analysis.genes],
+            
+            // Dados simulados para preencher os gráficos (já que o FASTA não tem tudo)
             secretedProteins: [Math.floor(analysis.genes * 0.08)],
             effectors: [Math.floor(analysis.genes * 0.02)],
             bgcs: [Math.floor(Math.random() * 5) + 20],
@@ -117,7 +127,11 @@ const UploadManager = {
             lifestyle: { 'Patógeno': 1, 'Endófito': 0 },
             lifestyles: ['Patógeno'],
             type: 'uploaded',
-            editable: true
+            editable: true,
+            
+            // --- O DADO QUE A ABA tAI PRECISA ---
+            // Salva a sequência crua na memória para ser usada na análise de tAI
+            sequenceContent: sequenceContent 
         };
         
         // Adicionar aos dados principais
@@ -131,14 +145,20 @@ const UploadManager = {
     },
 
     updateAllVisualizations() {
-        // Atualizar gráficos
-        ChartManager.updateChartsWithFilteredData(speciesData);
+        // Atualizar gráficos se o ChartManager existir
+        if (typeof ChartManager !== 'undefined') {
+            ChartManager.updateChartsWithFilteredData(speciesData);
+        }
         
         // Atualizar cartões de resumo
-        SummaryManager.updateSummaryCards(speciesData);
+        if (typeof SummaryManager !== 'undefined') {
+            SummaryManager.updateSummaryCards(speciesData);
+        }
         
         // Atualizar tabela de comparação
-        EditableTableManager.updateComparisonTable();    
+        if (typeof EditableTableManager !== 'undefined') {
+            EditableTableManager.updateComparisonTable();    
+        }
         
         // Atualizar tabela de genomas carregados
         this.updateLoadedGenomesTable();
@@ -146,6 +166,7 @@ const UploadManager = {
 
     updateSpeciesFilter() {
         const speciesFilter = document.getElementById('species-filter');
+        if (!speciesFilter) return;
         
         // Limpar apenas opções uploaded
         const optionsToRemove = [];
@@ -172,6 +193,7 @@ const UploadManager = {
     
     updateLoadedGenomesTable() {
         const container = document.getElementById('loaded-genomes-table');
+        if (!container) return;
         
         if (Object.keys(uploadedGenomes).length === 0) {
             container.innerHTML = `
@@ -221,7 +243,9 @@ const UploadManager = {
         container.querySelectorAll('.edit-species-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const species = btn.dataset.species;
-                EditableTableManager.showSpeciesEditModal(species);
+                if (typeof EditableTableManager !== 'undefined') {
+                    EditableTableManager.showSpeciesEditModal(species);
+                }
             });
         });
     },
@@ -241,11 +265,14 @@ const UploadManager = {
         this.updateAllVisualizations();
         
         // Resetar filtro de espécies
-        FilterManager.updateSpeciesFilter();
+        this.updateSpeciesFilter();
         
         // Limpar input de arquivo
         document.getElementById('genomes-folder-upload').value = '';
-        document.getElementById('folder-status').innerHTML = '<i class="fas fa-info-circle"></i> Nenhuma pasta selecionada';
-        document.getElementById('folder-status').style.color = '#7f8c8d';
+        const folderStatus = document.getElementById('folder-status');
+        if (folderStatus) {
+            folderStatus.innerHTML = '<i class="fas fa-info-circle"></i> Nenhuma pasta selecionada';
+            folderStatus.style.color = '#7f8c8d';
+        }
     }
 };

@@ -5,35 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🧬 Dashboard Integrado de Genômica - Phyllosticta | BioGeMM - UFPR</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@sgratzl/chartjs-chart-boxplot@4.0.0/build/index.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
-  <header class="header">
-    <div class="header-content">
-        <img src="Biogemm-Photoroom.png" alt="Logo BioGeMM" class="logo">
-        <div class="text-content">
-            <h1>🧬 Dashboard Integrado de Genômica - Phyllosticta</h1>
-            <p class="description">
-                Plataforma interativa para <strong>visualização, análise e comparação de dados genômicos</strong> 
-                das espécies de <em>Phyllosticta</em> associadas a citrus (Cepas-Tipo).
-                <br><br>
-                O sistema permite <strong>upload de arquivos</strong>, integração com o <strong>NCBI</strong> 
-                e utilização de dados do 
-                <strong>Laboratório de Bioprospecção e Genética Molecular de Microrganismos - BioGeMM (UFPR)</strong>.
-            </p>
-            <p class="author">
-                Desenvolvido por <strong>Murilo Gabriel da Silva</strong>  
-                (<a href="mailto:murilo.gabriel@ufpr.br">murilo.gabriel@ufpr.br</a>)
-            </p>
-        </div>
-    </div>
-</header>
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-content">
+                <img src="Biogemm-Photoroom.png" alt="Logo BioGeMM" class="logo">
+                <div class="text-content">
+                    <h1>🧬 Dashboard Integrado de Genômica - Phyllosticta</h1>
+                    <p class="description">
+                        Plataforma interativa para <strong>visualização, análise e comparação de dados genômicos</strong> 
+                        das espécies de <em>Phyllosticta</em> associadas a citrus (Cepas-Tipo).
+                        <br><br>
+                        O sistema permite <strong>upload de arquivos</strong>, integração com o <strong>NCBI</strong> 
+                        e utilização de dados do 
+                        <strong>Laboratório de Bioprospecção e Genética Molecular de Microrganismos - BioGeMM (UFPR)</strong>.
+                    </p>    
+                    <p class="author">
+                        Desenvolvido por <strong>Murilo Gabriel da Silva</strong>  
+                        (<a href="mailto:murilo.gabriel@ufpr.br">murilo.gabriel@ufpr.br</a>)
+                    </p>
+                </div>
+            </div>
+        </header>
 
-
-        
+        <!-- DASHBOARD -->
         <div class="dashboard">
+            <!-- FILTROS -->
             <div class="filters">
                 <div class="filter-group">
                     <h3>Filtros</h3>
@@ -115,7 +117,9 @@
                 </div>
             </div>
             
+            <!-- CONTEÚDO PRINCIPAL -->
             <div class="content">
+                <!-- CARDS DE RESUMO -->
                 <div class="summary-cards">
                     <div class="card">
                         <h3>🦠 Total de Espécies</h3>
@@ -139,7 +143,7 @@
                     </div>
                 </div>
                 
-                <!-- Container de Abas Atualizado -->
+                <!-- ABAS DE NAVEGAÇÃO -->
                 <div class="tab-container">
                     <div class="tab active" data-tab="genomics">
                         <i class="fas fa-dna"></i> Genômica
@@ -156,36 +160,34 @@
                     <div class="tab" data-tab="ncbi-search">
                         <i class="fas fa-database"></i> Buscar NCBI
                     </div>
+                    <div class="tab" data-tab="tai-analysis">
+                        <i class="fas fa-calculator"></i> Análise tAI
+                    </div>
                 </div>
 
-                <!-- Conteúdo da Aba Genômica -->
+                <!-- ABA GENÔMICA -->
                 <div class="tab-content active" id="genomics-tab">
                     <div class="charts-container">
                         <div class="chart-box">
                             <h3 class="chart-title">📏 Tamanho do Genoma por Espécie (Mb)</h3>
                             <canvas id="genome-size-chart"></canvas>
                         </div>
-                        
                         <div class="chart-box">
                             <h3 class="chart-title">🧬 Conteúdo GC por Espécie (%)</h3>
                             <canvas id="gc-content-chart"></canvas>
                         </div>
-                        
                         <div class="chart-box">
                             <h3 class="chart-title">🔬 Genes Previstos por Espécie</h3>
                             <canvas id="genes-chart"></canvas>
                         </div>
-
                         <div class="chart-box">
                             <h3 class="chart-title">🔄 Conteúdo Repetitivo por Espécie (%)</h3>
                             <canvas id="repetitive-content-chart"></canvas>
                         </div>
-
                         <div class="chart-box">
                             <h3 class="chart-title">⚡ % de TEs Afetados por RIP</h3>
                             <canvas id="rip-affected-chart"></canvas>
                         </div>
-
                         <div class="chart-box">
                             <h3 class="chart-title">📊 Número de Contigs</h3>
                             <canvas id="contigs-chart"></canvas>
@@ -193,34 +195,29 @@
                     </div>
                 </div>
 
-                <!-- Conteúdo da Aba Proteômica -->
+                <!-- ABA PROTEÔMICA -->
                 <div class="tab-content" id="proteomics-tab">
                     <div class="charts-container">
                         <div class="chart-box">
                             <h3 class="chart-title">🔬 Proteínas Secretadas por Espécie</h3>
                             <canvas id="secreted-proteins-chart"></canvas>
                         </div>
-
                         <div class="chart-box">
                             <h3 class="chart-title">🎯 Efetores por Espécie</h3>
                             <canvas id="effectors-chart"></canvas>
                         </div>
-
                         <div class="chart-box">
                             <h3 class="chart-title">🧪 BGCs por Espécie</h3>
                             <canvas id="bgcs-chart"></canvas>
                         </div>
-
                         <div class="chart-box">
                             <h3 class="chart-title">⚙️ CAZymes por Espécie</h3>
                             <canvas id="cazymes-chart"></canvas>
                         </div>
-
                         <div class="chart-box">
                             <h3 class="chart-title">🧴 Lipases por Espécie</h3>
                             <canvas id="lipases-chart"></canvas>
                         </div>
-
                         <div class="chart-box">
                             <h3 class="chart-title">✂️ Proteases por Espécie</h3>
                             <canvas id="proteases-chart"></canvas>
@@ -228,24 +225,21 @@
                     </div>
                 </div>
 
-                <!-- Conteúdo da Aba Estrutura Genômica -->
+                <!-- ABA ESTRUTURA GENÔMICA -->
                 <div class="tab-content" id="structure-tab">
                     <div class="charts-container">
                         <div class="chart-box">
                             <h3 class="chart-title">📈 Comparação de Tamanho de Genoma vs Genes</h3>
                             <canvas id="genome-comparison-chart"></canvas>
                         </div>
-                        
                         <div class="chart-box">
                             <h3 class="chart-title">📊 Relação entre Genes e Proteínas Secretadas</h3>
                             <canvas id="genes-vs-proteins-chart"></canvas>
                         </div>
-                        
                         <div class="chart-box">
                             <h3 class="chart-title">🎨 Distribuição de Conteúdo GC</h3>
                             <canvas id="gc-distribution-chart"></canvas>
                         </div>
-
                         <div class="chart-box">
                             <h3 class="chart-title">🎯 Relação entre Efetores e BGCs</h3>
                             <canvas id="effectors-vs-bgcs-chart"></canvas>
@@ -253,7 +247,7 @@
                     </div>
                 </div>
 
-                <!-- Conteúdo da Aba Carregar Dados (APENAS upload de arquivos) -->
+                <!-- ABA CARREGAR DADOS -->
                 <div class="tab-content" id="upload-tab">
                     <div class="upload-section">
                         <div class="upload-options">
@@ -281,12 +275,12 @@
                                     <i class="fas fa-info-circle"></i> Nenhuma pasta selecionada
                                 </div>
                             </div>
-                            
+
                             <div class="upload-info">
                                 <h4>📋 Informações sobre o Carregamento</h4>
                                 <ul>
                                     <li>✅ Suporta arquivos .fasta, .fa, .fna</li>
-                                    <li>🔍 Análise automática de tamanho e conteúdo GC</li>
+                                    <li>📏 Análise automática de tamanho e conteúdo GC</li>
                                     <li>🧬 Estimativa de genes e proteínas baseada em estatísticas</li>
                                     <li>📊 Integração automática com gráficos e filtros</li>
                                 </ul>
@@ -306,7 +300,7 @@
                     </div>
                 </div>
 
-                <!-- Nova Aba: Buscar NCBI (CONTEÚDO SEPARADO) -->
+                <!-- ABA BUSCAR NCBI -->
                 <div class="tab-content" id="ncbi-search-tab">
                     <div class="search-section">
                         <div class="search-main">
@@ -315,8 +309,7 @@
                                 <p>Busque por genomas no banco de dados do NCBI</p>
                                 
                                 <div class="search-controls">
-                                    <input type="text" id="ncbi-search-term" placeholder="Ex: Phyllosticta citricarpa" 
-                                           class="search-input">
+                                    <input type="text" id="ncbi-search-term" placeholder="Ex: Phyllosticta citricarpa" class="search-input">
                                     <button id="ncbi-search-btn" class="upload-btn">
                                         <i class="fas fa-search"></i> Buscar
                                     </button>
@@ -342,18 +335,69 @@
                         <div class="search-info">
                             <h4>📋 Informações sobre a Busca NCBI</h4>
                             <ul>
-                                <li>✅ Acesso ao banco de dados do NCBI</li>
-                                <li>🔍 Busca por nome de organismo ou accession</li>
-                                <li>🧬 Análise automática de características genômicas</li>
-                                <li>📊 Integração imediata com os gráficos</li>
-                                <li>💾 Dados salvos localmente durante a sessão</li>
-                                <li>🌐 Conexão com servidor local na porta 5000</li>
+                                <li>Acesso ao banco de dados do NCBI</li>
+                                <li> Busca por nome de organismo ou accession</li>
+                                <li> Análise automática de características genômicas</li>
+                                <li> Integração imediata com os gráficos</li>
+                                <li> Dados salvos localmente durante a sessão</li>
+                                <li> execute o app.py para funcionar</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tabela de Comparação (comum a todas as abas) -->
+<div class="tab-content" id="tai-analysis-tab">
+    <div class="loaded-genomes-display">
+        <h3 class="chart-title">📊 Resultados e Comparação</h3>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button id="btn-batch-import-trna" style="flex: 1; background: linear-gradient(135deg, #e67e22, #d35400); color: white;">
+                <i class="fas fa-layer-group"></i> 1. Importar Todos (Batch)
+            </button>
+            
+            <button id="btn-force-matrix" onclick="document.getElementById('btn-compare-all')?.click()" style="flex: 1; background: linear-gradient(135deg, #8e44ad, #9b59b6); color: white;">
+                <i class="fas fa-th"></i> 2. Gerar Matriz Comparativa
+            </button>
+        </div>
+
+        <div class="chart-box" id="individual-chart-container" style="height: 400px; margin-bottom: 24px;">
+            <h4 style="text-align: center; color: var(--accent-blue); margin-bottom: 16px;">
+                Visualização Individual (Selecione um genoma acima)
+            </h4>
+            <canvas id="trna-bubble-chart"></canvas>
+        </div>
+
+        <div class="chart-box" id="multi-species-matrix-container" style="display: none; height: 600px; margin-bottom: 24px; border: 2px solid #8e44ad;">
+            <h4 style="text-align: center; color: #8e44ad; margin-bottom: 16px;">
+                🧬 Matriz Comparativa Multi-Espécies
+            </h4>
+            <canvas id="multi-species-matrix-chart"></canvas>
+            <div style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666;">
+                Cada bolha é um gene de tRNA. Cores são aleatórias para distinção visual.
+            </div>
+        </div>
+
+        <div class="summary-cards" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+            <div class="card" style="padding: 16px;">
+                <h3>Média tAI</h3>
+                <div class="value" id="tai-mean-value">-</div>
+            </div>
+            <div class="card" style="padding: 16px;">
+                <h3>Genes Analisados</h3>
+                <div class="value" id="tai-total-genes">-</div>
+            </div>
+        </div>
+
+        <div class="chart-box" style="height: 350px;">
+            <canvas id="tai-distribution-chart"></canvas>
+        </div>
+        
+        <button id="btn-download-tai" class="export-btn" style="margin-top: 24px; display: none; width: 100%;">
+            <i class="fas fa-file-csv"></i> Baixar Dados (.csv)
+        </button>
+    </div>
+</div>
+                <!-- TABELA DE COMPARAÇÃO -->
                 <div class="comparison-table">
                     <h3 class="chart-title">📋 Comparação entre Espécies</h3>
                     <div class="table-container">
@@ -485,12 +529,14 @@
             </div>
         </div>
         
+        <!-- FOOTER -->
         <footer>
             <p>Dashboard de análise desenvolvido para visualização de dados de espécies de Phyllosticta</p>
             <p>Dados obtidos de múltiplos estudos e conjuntos de dados genômicos</p>
         </footer>
     </div>
 
+    <!-- SCRIPTS -->
     <script src="data/species-data.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/charts.js"></script>
@@ -499,13 +545,7 @@
     <script src="js/comparison.js"></script>
     <script src="js/editable-table.js"></script>
     <script src="js/ncbi-search.js"></script>
+    <script src="js/tai-analysis.js"></script>
     <script src="js/main.js"></script>
-        <head>
-         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-        <script src="https://unpkg.com/@sgratzl/chartjs-chart-boxplot@4.0.0/build/index.umd.min.js"></script>
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    </head>
 </body>
 </html>

@@ -97,7 +97,9 @@ const ChartManager = {
                 }
             }
         });
+        
     },
+    
 
     // Gráficos Genômicos
     renderGenomeSizeChart() {
@@ -687,5 +689,335 @@ if (Chart.controllers.boxplot === undefined) {
                 this.height = this.height + 20;
             };
         }
+    });
+}
+
+let multiSpeciesChart = null;
+let bubbleChart = null;
+let taiChart = null;
+
+// --- GRÁFICO 1: MATRIZ MULTI-ESPÉCIES ---
+// --- GRÁFICO 1: MATRIZ MULTI-ESPÉCIES (Estilo R/ggplot2) ---
+function renderMultiSpeciesChartGrouped(data, xLabels, yLabels) {
+    const matrixContainer = document.getElementById('multi-species-matrix-container');
+    const ctx = document.getElementById('multi-species-matrix-chart').getContext('2d');
+    
+    // 1. Controle de Exibição
+    if (matrixContainer) matrixContainer.style.display = 'block';
+    const individualContainer = document.getElementById('trna-bubble-chart')?.closest('.chart-box');
+    if (individualContainer) individualContainer.style.display = 'none';
+    
+    // 2. Preparação dos Dados (Flattening)
+    const datasetData = [];
+
+    data.forEach((item) => {
+        xLabels.forEach((anticodon) => {
+            const val = item.counts[anticodon] || 0;
+            if (val > 0) {
+                datasetData.push({
+                    x: anticodon,     // Categoria Eixo X
+                    y: item.species,  // Categoria Eixo Y
+                    r: Math.min(Math.sqrt(val) * 4.5, 25), // Raio proporcional (Teto 25px)
+                    v: val,
+                    speciesName: item.species,
+                    anticodonName: anticodon,
+                    aa: typeof ANTICODON_TO_AA !== 'undefined' ? ANTICODON_TO_AA[anticodon] : '?',
+                });
+            }
+        });
+    });
+
+    // 3. Altura Dinâmica (IMPORTANTE: Corrige o espaçamento vertical)
+    // Base: 60px por espécie + 140px (cabeçalho/rodapé/padding)
+    const calculatedHeight = (yLabels.length * 60) + 140; 
+    if (matrixContainer) matrixContainer.style.height = `${calculatedHeight}px`;
+
+    // Destruir instância anterior
+    if (multiSpeciesChart) multiSpeciesChart.destroy();
+
+    // 4. Renderização Chart.js
+    multiSpeciesChart = new Chart(ctx, {
+        type: 'bubble',
+        data: {
+            datasets: [{
+                label: 'tRNAs',
+                data: datasetData,
+                // Mapa de Calor (Azul -> Laranja -> Vermelho)
+                backgroundColor: function(context) {
+                    const val = context.raw?.v || 0;
+                    if (val >= 15) return 'rgba(192, 57, 43, 0.85)';  // Vermelho Forte
+                    if (val >= 10) return 'rgba(231, 76, 60, 0.85)';  // Vermelho
+                    if (val >= 5)  return 'rgba(243, 156, 18, 0.85)'; // Laranja
+                    return 'rgba(52, 152, 219, 0.65)';                // Azul Suave
+                },
+                borderColor: 'rgba(0,0,0,0.2)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: { top: 40, right: 20, bottom: 0, left: 10 }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: () => '',
+                        label: (c) => `${c.raw.y} | ${c.raw.aa}-${c.raw.x}: ${c.raw.v} cópias`
+                    },
+                    backgroundColor: 'rgba(44, 62, 80, 0.95)',
+                    padding: 10,
+                    cornerRadius: 6,
+                    displayColors: true,
+                    boxWidth: 10
+                }
+            },
+            scales: {
+                x: {
+                    type: 'category',
+                    labels: xLabels,
+                    position: 'top', // Labels no topo
+                    ticks: { 
+                        autoSkip: false, 
+                        maxRotation: 90, 
+                        minRotation: 90,
+                        font: { size: 10, family: "'Courier New', monospace" },
+                        color: '#34495e'
+                    },
+                    grid: {
+                        drawBorder: false,
+                        // Linhas de grade visualmente distintas para separar Aminoácidos
+                        color: (ctx) => {
+                            if (typeof ANTICODON_TO_AA === 'undefined') return '#eee';
+                            const index = ctx.index;
+                            if (index === 0) return 'transparent';
+                            const curr = ANTICODON_TO_AA[xLabels[index]];
+                            const prev = ANTICODON_TO_AA[xLabels[index-1]];
+                            return curr !== prev ? '#bdc3c7' : '#f7f9f9'; // Escuro na borda do grupo
+                        },
+                        lineWidth: (ctx) => {
+                            if (typeof ANTICODON_TO_AA === 'undefined') return 1;
+                            const index = ctx.index;
+                            if (index === 0) return 0;
+                            const curr = ANTICODON_TO_AA[xLabels[index]];
+                            const prev = ANTICODON_TO_AA[xLabels[index-1]];
+                            return curr !== prev ? 2 : 1;
+                        }
+                    }
+                },
+                y: {
+                    type: 'category',
+                    labels: yLabels,
+                    offset: true,
+                    ticks: { 
+                        font: { size: 12, weight: '600' },
+                        color: '#2c3e50'
+                    },
+                    grid: {
+                        color: '#ecf0f1', // Linhas horizontais
+                        drawBorder: false
+                    }
+                }
+            }
+        },
+        // Plugin: Caixas de Agrupamento de Aminoácidos no Topo
+        plugins: [{
+            id: 'headerGroup',
+            afterDraw: (chart) => {
+                if (typeof ANTICODON_TO_AA === 'undefined') return;
+                const ctx = chart.ctx;
+                const xAxis = chart.scales.x;
+                const topY = xAxis.bottom;
+
+                let currentAA = null;
+                let startX = null;
+
+                ctx.save();
+                ctx.font = 'bold 10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                xLabels.forEach((label, i) => {
+                    const aa = ANTICODON_TO_AA[label];
+                    const x = xAxis.getPixelForValue(i);
+                    const halfWidth = (xAxis.width / xLabels.length) / 2;
+
+                    // Mudança de grupo ou início
+                    if (aa !== currentAA) {
+                        // Desenhar grupo anterior
+                        if (currentAA !== null) {
+                            const endX = xAxis.getPixelForValue(i - 1) + halfWidth;
+                            const rectWidth = endX - startX;
+                            
+                            // Caixa
+                            ctx.fillStyle = '#ecf0f1';
+                            ctx.fillRect(startX, topY - 32, rectWidth - 2, 18);
+                            // Texto
+                            ctx.fillStyle = '#7f8c8d';
+                            ctx.fillText(currentAA, startX + (rectWidth/2), topY - 23);
+                        }
+                        currentAA = aa;
+                        startX = x - halfWidth;
+                    }
+                    
+                    // Desenhar último grupo
+                    if (i === xLabels.length - 1) {
+                        const endX = x + halfWidth;
+                        const rectWidth = endX - startX;
+                        ctx.fillStyle = '#ecf0f1';
+                        ctx.fillRect(startX, topY - 32, rectWidth - 2, 18);
+                        ctx.fillStyle = '#7f8c8d';
+                        ctx.fillText(currentAA, startX + (rectWidth/2), topY - 23);
+                    }
+                });
+                ctx.restore();
+            }
+        }]
+    });
+}
+// --- GRÁFICO 2: tRNA INDIVIDUAL (Blue) ---
+function renderIndividualTrnaChart(counts, speciesName) {
+    const individualContainer = document.getElementById('trna-bubble-chart').closest('.chart-box');
+    const matrixContainer = document.getElementById('multi-species-matrix-container');
+    
+    if (individualContainer) individualContainer.style.display = 'block';
+    if (matrixContainer) matrixContainer.style.display = 'none';
+    
+    const ctx = document.getElementById('trna-bubble-chart').getContext('2d');
+    const labels = Object.keys(counts).sort();
+    
+    const dataPoints = labels.map((anticodon, index) => ({
+        x: index,
+        y: 0,
+        r: Math.min(counts[anticodon] * 2, 30),
+        v: counts[anticodon],
+        anticodon: anticodon
+    }));
+    
+    if (bubbleChart) bubbleChart.destroy();
+    
+    bubbleChart = new Chart(ctx, {
+        type: 'bubble',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: `tRNAs de ${speciesName}`,
+                data: dataPoints,
+                backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                borderColor: 'rgba(41, 128, 185, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Visualização de tRNAs - ${speciesName}`,
+                    font: { size: 14, weight: 'bold' },
+                    color: '#3498db'
+                },
+                legend: { display: false },
+                tooltip: { callbacks: { label: (ctx) => `${ctx.raw.anticodon}: ${ctx.raw.v} cópias` } }
+            },
+            scales: {
+                x: { 
+                    type: 'category', labels: labels,
+                    ticks: { autoSkip: false, maxRotation: 90, minRotation: 90, font: { size: 9 } }
+                },
+                y: { display: false, min: -1, max: 1 }
+            }
+        }
+    });
+}
+
+// --- GRÁFICO 3: Distribuição tAI (Histograma) ---
+function renderTaiDistributionChart(results) {
+    const canvas = document.getElementById('tai-distribution-chart');
+    if (!canvas) return;
+    
+    // Destrói gráfico anterior se existir (evita sobreposição)
+    if (typeof taiChart !== 'undefined' && taiChart) {
+        taiChart.destroy();
+    }
+
+    // 1. Validar Dados
+    if (!results || results.length === 0) {
+        console.warn("Sem dados para gerar distribuição tAI");
+        return;
+    }
+
+    // 2. Processar Dados (Histograma)
+    // tAI varia de 0.0 a 1.0. Vamos criar 20 intervalos (bins) de 0.05
+    const binCount = 20;
+    const histogram = new Array(binCount).fill(0);
+    const values = results.map(r => r.tai);
+
+    values.forEach(val => {
+        // Encontra o índice do intervalo (ex: 0.43 * 20 = 8.6 -> índice 8)
+        let index = Math.floor(val * binCount);
+        // Garante que o valor máximo (1.0) fique no último intervalo
+        if (index >= binCount) index = binCount - 1;
+        histogram[index]++;
+    });
+
+    // Criar labels para o eixo X (0.0, 0.05, 0.10 ...)
+    const labels = histogram.map((_, i) => (i / binCount).toFixed(2));
+
+    const ctx = canvas.getContext('2d');
+    
+    // 3. Renderizar Gráfico
+    // Importante: atribuir à variável global 'taiChart' declarada no topo do arquivo
+    taiChart = new Chart(ctx, { 
+        type: 'bar', 
+        data: {
+            labels: labels, 
+            datasets: [{
+                label: 'Frequência de Genes', 
+                data: histogram, 
+                backgroundColor: 'rgba(52, 152, 219, 0.7)', // Azul
+                borderColor: 'rgba(41, 128, 185, 1)',
+                borderWidth: 1,
+                // Estas duas propriedades fazem as barras se tocarem (visual de histograma)
+                barPercentage: 1.0,
+                categoryPercentage: 1.0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // CRUCIAL: Permite que o gráfico ocupe os 350px do HTML
+            plugins: {
+                legend: { display: false },
+                title: { 
+                    display: true, 
+                    text: `Distribuição de Eficiência (tAI) - ${results.length} Genes`,
+                    font: { size: 14 }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: (items) => {
+                            const i = items[0].dataIndex;
+                            const start = (i / binCount).toFixed(2);
+                            const end = ((i + 1) / binCount).toFixed(2);
+                            return `Intervalo tAI: ${start} - ${end}`;
+                        },
+                        label: (item) => `${item.raw} genes`
+                    }
+                }
+            },
+            scales: {
+                x: { 
+                    title: { display: true, text: 'Índice de Adaptação (tAI)' },
+                    ticks: { maxTicksLimit: 11 } // Evita poluição visual no eixo X
+                },
+                y: { 
+                    title: { display: true, text: 'Quantidade de Genes' },
+                    beginAtZero: true
+                }
+            }
+        } 
     });
 }
